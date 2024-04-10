@@ -1,0 +1,73 @@
+create database oficina
+
+use oficina
+
+
+create table proprietário (
+id int primary key identity,
+nome varchar(50),
+telefone varchar(15)
+);
+
+create table carros (
+id int primary key identity,
+modelo varchar(20),
+ano int,
+proprietário_id int foreign key (proprietário_id) references proprietário(id)
+);
+
+create table serviços (
+id int primary key identity,
+descrição varchar(100),
+preço float
+);
+
+create table aplicações (
+id int primary key identity,
+id_carro int foreign key (id_carro) references carros(id),
+id_proprietário int foreign key (id_proprietário) references proprietário(id),
+id_serviço int foreign key (id_serviço) references serviços(id),
+data_serviço date
+)
+
+insert proprietário (nome, telefone) values
+('Gabriel Santos', '11 95485-2605'),
+('Arthur Oliveira', '11 98462-1102'),
+('Igor de Paulo', '56 94358-1644'),
+('Júlia Ramos', '34 93556-1333'),
+('Gabriela Farias', '34 95136-8564')
+
+insert carros (modelo, ano, proprietário_id) values
+('teste1', 2018, 1),
+('teste2', 2020, 1),
+('teste3',2014,2),
+('teste4',2016,3),
+('teste5',2010,3),
+('teste6',2017,4),
+('teste7', 2009, 5)
+
+insert serviços (descrição, preço) values
+('teste1', 198.90),
+('teste2', 50.25),
+('teste3', 73.30),
+('teste4', 205.00)
+
+insert aplicações (id_carro, id_proprietário, id_serviço, data_serviço) values
+(2, 1, 2, '2022-01-19'),
+(3, 2, 3, '2018-04-23'),
+(4, 3, 3,'2019-03-20'),
+(4, 3, 1,'2021-06-04'),
+(7, 5, 4,'2013-03-13')
+
+select * from proprietário
+select * from carros
+select * from serviços
+select * from aplicações
+
+select modelo from carros
+where proprietário_id in (select id from proprietário where nome='Igor de Paulo')
+
+select c.modelo, (select sum(s.preço) from aplicações a
+join serviços s on a.id_serviço = s.id
+where a.id_carro = c.id) as preço_total from carros c;
+
